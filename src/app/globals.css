@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-dark: #093A3E;
+  --color-brand-light: #A7EBD5;
+  --color-brand-surface: #F2E7D9;
+  --color-brand-primary: #0B5141;
+  --color-brand-primary-hover: #084033;
+  --color-brand-text: #618D80;
+  --color-brand-bg-left: #FAFAFA;
+  --color-google-bg: #EAEBF5;
+  --color-premium-badge: #FADBCD;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-brand-bg-left);
+    color: var(--color-brand-dark);
+    font-family: var(--font-outfit), sans-serif;
+  }
+}
+
+/* Custom Checkbox Styling */
+.custom-checkbox {
+  appearance: none;
+  background-color: white;
+  margin: 0;
+  font: inherit;
+  color: var(--color-brand-light);
+  width: 1.15em;
+  height: 1.15em;
+  border: 1px solid var(--color-brand-light);
+  border-radius: 0.15em;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.custom-checkbox::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--color-brand-primary);
+  background-color: var(--color-brand-primary);
+  transform-origin: center;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.custom-checkbox:checked {
+  background-color: var(--color-brand-light);
+  border-color: var(--color-brand-light);
+}
+
+.custom-checkbox:checked::before {
+  transform: scale(1);
+}
+
+/* Custom hover animations */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(11, 81, 65, 0.2), 0 8px 10px -6px rgba(11, 81, 65, 0.1);
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #AEF1DD 0%, #D2FAEF 40%, #EDE1CD 100%);
+}
+
+@keyframes fade-in-up {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out forwards;
+  opacity: 0;
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+.delay-700 { animation-delay: 700ms; }
+
