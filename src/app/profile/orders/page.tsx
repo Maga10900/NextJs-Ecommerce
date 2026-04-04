@@ -3,16 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardSidebar from '@/components/DashboardSidebar';
+import { getOrders } from '@/lib/orders';
 
-const allOrders = [
-  { id: '#ORD-2024-8812', date: 'May 14, 2024', status: 'Shipped',     total: '$1,240.00', items: 3 },
-  { id: '#ORD-2024-8795', date: 'May 12, 2024', status: 'Processing',  total: '$450.25',   items: 1 },
-  { id: '#ORD-2024-8750', date: 'May 10, 2024', status: 'Delivered',   total: '$2,100.00', items: 5 },
-  { id: '#ORD-2024-8621', date: 'May 08, 2024', status: 'Shipped',     total: '$89.99',    items: 1 },
-  { id: '#ORD-2024-8500', date: 'May 01, 2024', status: 'Delivered',   total: '$670.00',   items: 2 },
-  { id: '#ORD-2024-8420', date: 'Apr 27, 2024', status: 'Delivered',   total: '$3,400.00', items: 4 },
-  { id: '#ORD-2024-8105', date: 'Apr 19, 2024', status: 'Cancelled',   total: '$120.50',   items: 2 },
-];
+
 
 const statusStyles: Record<string, string> = {
   Shipped:    'bg-[#9BF1CD] text-[#0B5141]',
@@ -29,8 +22,19 @@ export default function OrdersPage() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
+  const [allData, setAllData] = useState<any[]>([]);
 
   useEffect(() => {
+    const rawOrders = getOrders();
+    const formattedOrders = rawOrders.map(o => ({
+      id: `#${o.id}`,
+      date: new Date(o.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+      status: 'Processing',
+      total: `$${Number(o.total || 0).toFixed(2)}`,
+      items: o.items?.length || 0,
+    }));
+    setAllData(formattedOrders);
+
     const token = localStorage.getItem('access_token');
     if (!token) { router.push('/'); return; }
     fetch('https://api.escuelajs.co/api/v1/auth/profile', { headers: { 'Authorization': `Bearer ${token}` } })
@@ -46,7 +50,7 @@ export default function OrdersPage() {
   );
 
   const filters = ['All', 'Shipped', 'Processing', 'Delivered', 'Cancelled'];
-  const filtered = filter === 'All' ? allOrders : allOrders.filter(o => o.status === filter);
+  const filtered = filter === 'All' ? allData : allData.filter(o => o.status === filter);
 
   return (
     <div className="min-h-screen flex bg-[#E4FAF2] text-[#093A3E] font-sans">
@@ -59,17 +63,17 @@ export default function OrdersPage() {
             <p className="text-sm text-[#618D80] mt-1">Track and manage all your purchases</p>
           </div>
           <div className="text-sm font-semibold text-[#0B5141] bg-white px-4 py-2 rounded-full shadow-sm">
-            {allOrders.length} Total Orders
+            {allData.length} Total Orders
           </div>
         </header>
 
         {/* Summary Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 animate-fade-in-up delay-100">
           {[
-            { label: 'Total Orders', value: allOrders.length, color: 'bg-[#A2F0D6]', textColor: 'text-[#0B5141]' },
-            { label: 'Delivered', value: allOrders.filter(o => o.status === 'Delivered').length, color: 'bg-[#D1FAE5]', textColor: 'text-[#065F46]' },
-            { label: 'In Transit', value: allOrders.filter(o => o.status === 'Shipped').length, color: 'bg-[#9BF1CD]', textColor: 'text-[#0B5141]' },
-            { label: 'Processing', value: allOrders.filter(o => o.status === 'Processing').length, color: 'bg-[#FFE5CA]', textColor: 'text-[#A16207]' },
+            { label: 'Total Orders', value: allData.length, color: 'bg-[#A2F0D6]', textColor: 'text-[#0B5141]' },
+            { label: 'Delivered', value: allData.filter(o => o.status === 'Delivered').length, color: 'bg-[#D1FAE5]', textColor: 'text-[#065F46]' },
+            { label: 'In Transit', value: allData.filter(o => o.status === 'Shipped').length, color: 'bg-[#9BF1CD]', textColor: 'text-[#0B5141]' },
+            { label: 'Processing', value: allData.filter(o => o.status === 'Processing').length, color: 'bg-[#FFE5CA]', textColor: 'text-[#A16207]' },
           ].map(card => (
             <div key={card.label} className={`${card.color} rounded-2xl p-5 flex flex-col items-center justify-center text-center hover-lift`}>
               <span className={`text-3xl font-extrabold ${card.textColor}`}>{card.value}</span>
@@ -112,8 +116,8 @@ export default function OrdersPage() {
                   <td className="py-4 text-[#618D80]">{order.date}</td>
                   <td className="py-4 text-[#618D80]">{order.items} {order.items === 1 ? 'item' : 'items'}</td>
                   <td className="py-4">
-                    <span className={`inline-flex items-center space-x-1.5 ${statusStyles[order.status]} px-3 py-1 rounded-full text-xs font-bold`}>
-                      <span className={`w-1.5 h-1.5 ${dotStyles[order.status]} rounded-full`}></span>
+                    <span className={`inline-flex items-center space-x-1.5 ${statusStyles[order.status] || 'bg-gray-100 text-gray-800'} px-3 py-1 rounded-full text-xs font-bold`}>
+                      <span className={`w-1.5 h-1.5 ${dotStyles[order.status] || 'bg-gray-400'} rounded-full`}></span>
                       <span>{order.status}</span>
                     </span>
                   </td>
