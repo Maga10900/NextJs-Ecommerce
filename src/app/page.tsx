@@ -223,12 +223,12 @@ export default function LoginPage() {
               alt="Model demonstrating modern style"
               className="absolute inset-0 w-full h-full object-cover opacity-90 mix-blend-multiply"
             />
-            <div className="absolute top-8 right-8 text-right text-white/80 font-serif leading-tight">
+            {/* <div className="absolute top-8 right-8 text-right text-white/80 font-serif leading-tight">
               <p className="text-xl">L a i c [ e l r o i t |</p>
               <p className="text-xl mt-1">] o n l i G a v a n I</p>
               <p className="text-xl mt-1">s a f e i g n o l e</p>
               <p className="text-xl mt-1">s g d / e a t w o r k</p>
-            </div>
+            </div> */}
           </div>
 
           {/* Text underneath the image */}

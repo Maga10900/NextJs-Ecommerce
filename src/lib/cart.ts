@@ -21,6 +21,9 @@ export function getCart(): any[] {
 
 export function saveCart(cart: any[]): void {
   localStorage.setItem(getCartKey(), JSON.stringify(cart));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('cart-updated'));
+  }
 }
 
 export function addToCart(product: { id: number; title: string; price: number; images?: string[] }): any[] {

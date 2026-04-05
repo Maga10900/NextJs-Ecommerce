@@ -11,8 +11,17 @@ export default function Navbar() {
   const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
-    const cart = getCart();
-    setCartCount(cart.reduce((acc: number, item: any) => acc + item.qty, 0));
+    const updateCartCount = () => {
+      const cart = getCart();
+      setCartCount(cart.reduce((acc: number, item: any) => acc + item.qty, 0));
+    };
+    
+    updateCartCount();
+
+    window.addEventListener('cart-updated', updateCartCount);
+    return () => {
+      window.removeEventListener('cart-updated', updateCartCount);
+    };
   }, [pathname]);
 
   const handleCategoriesClick = (e: React.MouseEvent) => {
